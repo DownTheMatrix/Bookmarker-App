@@ -1,68 +1,62 @@
-// Initialize on DOM loaded
-document.addEventListener('DOMContentLoaded', fetchBookmarks);
+"use strict";
 
 // Listen for form submit
-const form = document.querySelector('#myForm');
-form.addEventListener('submit', saveBookmark);
+document.getElementById('myForm').addEventListener('submit', saveBookmark);
 
-// Save bookmark
+// Save Bookmark
 function saveBookmark(evt) {
+    // Get form values
+    const siteName = document.getElementById('site-name').value;
+    const siteUrl = document.getElementById('site-url').value;
 
-    // Fetch form values
-    const siteName = document.querySelector('#site-name').value;
-    const siteURL = document.querySelector('#site-url').value;
-
-    if (!validateForm(siteName, siteURL)) {
+    if (!validateForm(siteName, siteUrl)) {
         return false;
     }
 
-    // Create object to submit to local storage
     const bookmark = {
         name: siteName,
-        url: siteURL
+        url: siteUrl
     }
 
-    // Check if bookmarks is null
+    // Test if bookmarks is null
     if (localStorage.getItem('bookmarks') === null) {
         // Init array
         let bookmarks = [];
-        // Push bookmark object to the array
+        // Add to array
         bookmarks.push(bookmark);
-        // Set to local storage
+        // Set to localStorage
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     } else {
-        // Fetch bookmark from local storage
-        localStorage.getItem('bookmarks');
+        // Get bookmarks from localStorage
         let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-        // Add bookmark object to array
+        // Add bookmark to array
         bookmarks.push(bookmark);
-        // Set back to local storage
+        // Re-set back to localStorage
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
 
     // Clear form
-    document.querySelector('#myForm').reset();
+    document.getElementById('myForm').reset();
 
     // Re-fetch bookmarks
     fetchBookmarks();
 
-    // Prevent from submitting
+    // Prevent form from submitting
     evt.preventDefault();
 }
 
 // Delete bookmark
 function deleteBookmark(url) {
-    // Get bookmarks from local storage
+    // Get bookmarks from localStorage
     let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-    // Loop through bookmarks
-    const bookmarksLen = bookmarks.length;
-    for (let i = 0; i < bookmarksLen; i++) {
-        if (bookmarks[i].url === url) {
+    // Loop through the bookmarks
+    for (let i = 0; i < bookmarks.length; i++) {
+        if (bookmarks[i].url == url) {
             // Remove from array
-            bookmarks.splice(i, 1)
+            bookmarks.splice(i, 1);
         }
     }
-    // Set back to local storage
+    // Re-set back to localStorage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
 
     // Re-fetch bookmarks
@@ -71,39 +65,48 @@ function deleteBookmark(url) {
 
 // Fetch bookmarks
 function fetchBookmarks() {
+    // Get bookmarks from localStorage
     let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-    const bookmarksResult = document.querySelector('#bookmarks-result');
+    // Get output id
+    const bookmarksResults = document.getElementById('bookmarks-result');
 
-    // Show output
-    bookmarksResult.innerHTML = '';
-    const bookmarksLen = bookmarks.length;
-    for (let i = 0; i < bookmarksLen; i++) {
+    // Build output
+    bookmarksResults.innerHTML = '';
+    for (let i = 0; i < bookmarks.length; i++) {
         const name = bookmarks[i].name;
         const url = bookmarks[i].url;
 
-        bookmarksResult.innerHTML = `<div class="well"> 
-                                    <h3> ${name} 
-                                    <a href=" ${url} " class="btn btn-default" target="_blank">Visit</a>
-                                    <a onclick="deleteBookmark(\ ${url}' \)" href="#" class="btn btn-danger">Delete</a>
-                                    </h3> 
-                                    </div>`
+        bookmarksResults.innerHTML += '<div class="well">' +
+            '<h3>' + name +
+            ' <a class="btn btn-success" target="_blank" href="' + url + '">Visit</a> ' +
+            ' <a onclick="deleteBookmark(\'' + url + '\')" class="btn btn-danger" href="#">Delete</a> ' +
+            '</h3>' +
+            '</div>';
     }
 }
 
-// Validate form
-function validateForm(siteName, siteURL) {
-    if (!siteName || !siteURL) {
-        alert("Please fill in the forms");
+// Validate Form
+function validateForm(siteName, siteUrl) {
+    if (!siteName || !siteUrl) {
+        alert('Please fill in the form');
         return false;
     }
 
-    // Validate URLs
     const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     const regex = new RegExp(expression);
 
-    if (siteURL.match(regex)) {
-        alert("Please type a valid URL");
+    if (!siteUrl.match(regex)) {
+        alert('Please use a valid URL');
         return false;
     }
+
     return true;
 }
+
+
+/* bookmarksResult.innerHTML += `<div class="well"> 
+                                    <h3> ${name} 
+                                    <a href=" \'' ${url} '\' " class="btn btn-success" target="_blank">Visit</a>
+                                    <a onclick="deleteBookmark(${url})" href="#" class="btn btn-danger">Delete</a>
+                                    </h3> 
+                                    </div>` */
