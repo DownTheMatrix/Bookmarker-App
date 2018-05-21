@@ -1,6 +1,8 @@
+// Initialize on DOM loaded
+document.addEventListener('DOMContentLoaded', fetchBookmarks);
+
 // Listen for form submit
 const form = document.querySelector('#myForm');
-
 form.addEventListener('submit', saveBookmark);
 
 // Save bookmark
@@ -10,16 +12,15 @@ function saveBookmark(evt) {
     const siteName = document.querySelector('#site-name').value;
     const siteURL = document.querySelector('#site-url').value;
 
+    if (!validateForm(siteName, siteURL)) {
+        return false;
+    }
+
     // Create object to submit to local storage
     const bookmark = {
         name: siteName,
         url: siteURL
     }
-
-    /* // Local storage test
-    localStorage.setItem("test", "hello world");
-    localStorage.getItem("test");
-    localStorage.removeItem("test"); */
 
     // Check if bookmarks is null
     if (localStorage.getItem('bookmarks') === null) {
@@ -38,6 +39,13 @@ function saveBookmark(evt) {
         // Set back to local storage
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
+
+    // Clear form
+    document.querySelector('#myForm').reset();
+
+    // Re-fetch bookmarks
+    fetchBookmarks();
+
     // Prevent from submitting
     evt.preventDefault();
 }
@@ -47,6 +55,7 @@ function deleteBookmark(url) {
     // Get bookmarks from local storage
     let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
     // Loop through bookmarks
+    const bookmarksLen = bookmarks.length;
     for (let i = 0; i < bookmarksLen; i++) {
         if (bookmarks[i].url === url) {
             // Remove from array
@@ -55,6 +64,9 @@ function deleteBookmark(url) {
     }
     // Set back to local storage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+    // Re-fetch bookmarks
+    fetchBookmarks();
 }
 
 // Fetch bookmarks
@@ -71,11 +83,27 @@ function fetchBookmarks() {
 
         bookmarksResult.innerHTML = `<div class="well"> 
                                     <h3> ${name} 
-                                    <a href=" ${url}" class="btn btn-default" target="_blank">Visit</a>
-                                    <a onclick="deleteBookmark(\ ${url} \)" href="#" class="btn btn-danger">Delete</a>
+                                    <a href=" ${url} " class="btn btn-default" target="_blank">Visit</a>
+                                    <a onclick="deleteBookmark(\ ${url}' \)" href="#" class="btn btn-danger">Delete</a>
                                     </h3> 
                                     </div>`
     }
 }
 
-document.addEventListener('DOMContentLoaded', fetchBookmarks);
+// Validate form
+function validateForm(siteName, siteURL) {
+    if (!siteName || !siteURL) {
+        alert("Please fill in the forms");
+        return false;
+    }
+
+    // Validate URLs
+    const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    const regex = new RegExp(expression);
+
+    if (siteURL.match(regex)) {
+        alert("Please type a valid URL");
+        return false;
+    }
+    return true;
+}
