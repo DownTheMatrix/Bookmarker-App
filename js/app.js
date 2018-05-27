@@ -5,6 +5,7 @@ document.getElementById('myForm').addEventListener('submit', saveBookmark);
 
 // Save Bookmark
 function saveBookmark(evt) {
+
     // Get form values
     const siteName = document.getElementById('site-name').value;
     const siteUrl = document.getElementById('site-url').value;
@@ -20,17 +21,23 @@ function saveBookmark(evt) {
 
     // Test if bookmarks is null
     if (localStorage.getItem('bookmarks') === null) {
+
         // Init array
         let bookmarks = [];
+
         // Add to array
         bookmarks.push(bookmark);
+
         // Set to localStorage
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     } else {
+
         // Get bookmarks from localStorage
         let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+
         // Add bookmark to array
         bookmarks.push(bookmark);
+
         // Re-set back to localStorage
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
     }
@@ -53,15 +60,19 @@ function saveBookmark(evt) {
 
 // Delete bookmark
 function deleteBookmark(url) {
+
     // Get bookmarks from localStorage
     let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+
     // Loop through the bookmarks
     for (let i = 0; i < bookmarks.length; i++) {
         if (bookmarks[i].url == url) {
+
             // Remove from array
             bookmarks.splice(i, 1);
         }
     }
+
     // Re-set back to localStorage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
 
@@ -71,8 +82,10 @@ function deleteBookmark(url) {
 
 // Fetch bookmarks
 function fetchBookmarks() {
+
     // Get bookmarks from localStorage
     let bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+
     // Get output id
     const bookmarksResults = document.getElementById('bookmarks-result');
 
@@ -98,7 +111,8 @@ function validateForm(siteName, siteUrl) {
         return false;
     }
 
-    const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+    const expression =  /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+    
     const regex = new RegExp(expression);
 
     if (!siteUrl.match(regex)) {
