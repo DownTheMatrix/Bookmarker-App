@@ -45,6 +45,12 @@ function saveBookmark(evt) {
     evt.preventDefault();
 }
 
+// Clear local storage
+    const clearBtn = document.querySelector('#btn-clear');
+    clearBtn.addEventListener('click', function() {
+        localStorage.clear();
+    });
+
 // Delete bookmark
 function deleteBookmark(url) {
     // Get bookmarks from localStorage
@@ -78,8 +84,8 @@ function fetchBookmarks() {
 
         bookmarksResults.innerHTML += '<div class="well">' +
             '<h3>' + name +
-            ' <a class="btn btn-success" target="_blank" href="' + url + '">Visit</a> ' +
-            ' <a onclick="deleteBookmark(\'' + url + '\')" class="btn btn-danger" href="#">Delete</a> ' +
+            ' <a class="btn btn-outline-success" target="_blank" href="' + url + '">Visit</a> ' +
+            ' <a onclick="deleteBookmark(\'' + url + '\')" class="btn btn-outline-danger" href="#">Delete</a> ' +
             '</h3>' +
             '</div>';
     }
